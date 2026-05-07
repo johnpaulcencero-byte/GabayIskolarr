@@ -27,7 +27,7 @@ public class LoginPanel extends RoundedPanel {
         // TITLE
         JLabel title = new JLabel("Gabay - Iskolar");
 
-        title.setFont(new Font("Serif", Font.BOLD, 34));
+        title.setFont(new Font("Arial", Font.BOLD, 30));
 
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -60,6 +60,13 @@ public class LoginPanel extends RoundedPanel {
 
         loginBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        loginBtn.addActionListener(e -> {
+
+            new DashboardFrame();
+
+            frame.dispose();
+        });
+
         // FORGOT BUTTON
         JButton forgotBtn = new JButton("Forgot your password?");
 
@@ -86,7 +93,6 @@ public class LoginPanel extends RoundedPanel {
             frame.showPage("signup");
         });
 
-        // ADD COMPONENTS
         add(Box.createVerticalGlue());
 
         add(logo);

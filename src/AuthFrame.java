@@ -16,24 +16,20 @@ public class AuthFrame extends JFrame {
 
         setLocationRelativeTo(null);
 
-        // BACKGROUND COLOR
         getContentPane().setBackground(new Color(96, 0, 0));
 
-        // CARD LAYOUT
         cardLayout = new CardLayout();
 
         container = new JPanel(cardLayout);
 
         container.setOpaque(false);
 
-        // ADD PAGES
         container.add(new LoginPanel(this), "login");
 
         container.add(new SignupPanel(this), "signup");
 
         container.add(new ForgotPasswordPanel(this), "forgot");
 
-        // CENTER
         setLayout(new GridBagLayout());
 
         add(container);
@@ -44,6 +40,5 @@ public class AuthFrame extends JFrame {
     public void showPage(String page) {
 
         cardLayout.show(container, page);
-
     }
 }

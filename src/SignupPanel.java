@@ -12,7 +12,6 @@ public class SignupPanel extends RoundedPanel {
 
         setBorder(new EmptyBorder(30, 45, 30, 45));
 
-        // LOGO
         ImageIcon logoIcon = new ImageIcon("assets/logo.png");
 
         Image img = logoIcon.getImage().getScaledInstance(
@@ -24,14 +23,12 @@ public class SignupPanel extends RoundedPanel {
 
         logo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // TITLE
         JLabel title = new JLabel("Gabay - Iskolar");
 
-        title.setFont(new Font("Serif", Font.BOLD, 34));
+        title.setFont(new Font("Arial", Font.BOLD, 30));
 
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // EMAIL
         JTextField email = new JTextField();
 
         email.setMaximumSize(new Dimension(300, 40));
@@ -39,7 +36,6 @@ public class SignupPanel extends RoundedPanel {
         email.setBorder(
                 BorderFactory.createTitledBorder("Username / Email"));
 
-        // PASSWORD
         JPasswordField password = new JPasswordField();
 
         password.setMaximumSize(new Dimension(300, 40));
@@ -47,7 +43,6 @@ public class SignupPanel extends RoundedPanel {
         password.setBorder(
                 BorderFactory.createTitledBorder("Password"));
 
-        // SIGNUP BUTTON
         JButton signupBtn = new JButton("Sign up");
 
         signupBtn.setBackground(new Color(166, 95, 0));
@@ -60,7 +55,6 @@ public class SignupPanel extends RoundedPanel {
 
         signupBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // LOGIN BUTTON
         JButton loginBtn = new JButton("Already a User? Log in");
 
         loginBtn.setBorderPainted(false);
@@ -73,7 +67,6 @@ public class SignupPanel extends RoundedPanel {
             frame.showPage("login");
         });
 
-        // ADD COMPONENTS
         add(Box.createVerticalGlue());
 
         add(logo);

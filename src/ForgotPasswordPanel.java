@@ -12,7 +12,6 @@ public class ForgotPasswordPanel extends RoundedPanel {
 
         setBorder(new EmptyBorder(25, 45, 30, 45));
 
-        // BACK BUTTON
         JButton backBtn = new JButton("←");
 
         backBtn.setFont(new Font("Arial", Font.BOLD, 24));
@@ -27,7 +26,6 @@ public class ForgotPasswordPanel extends RoundedPanel {
             frame.showPage("login");
         });
 
-        // LOGO
         ImageIcon logoIcon = new ImageIcon("assets/logo.png");
 
         Image img = logoIcon.getImage().getScaledInstance(
@@ -39,14 +37,12 @@ public class ForgotPasswordPanel extends RoundedPanel {
 
         logo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // TITLE
-        JLabel title = new JLabel("Gabay - Iskolar");
+        JLabel title = new JLabel("Forgot Password");
 
-        title.setFont(new Font("Serif", Font.BOLD, 34));
+        title.setFont(new Font("Arial", Font.BOLD, 28));
 
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // DESCRIPTION
         JLabel description = new JLabel(
                 "Confirm your email and we'll send instructions.");
 
@@ -54,7 +50,6 @@ public class ForgotPasswordPanel extends RoundedPanel {
 
         description.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // EMAIL
         JTextField email = new JTextField();
 
         email.setMaximumSize(new Dimension(300, 40));
@@ -62,8 +57,7 @@ public class ForgotPasswordPanel extends RoundedPanel {
         email.setBorder(
                 BorderFactory.createTitledBorder("Email"));
 
-        // BUTTON
-        JButton sendBtn = new JButton("Sign up");
+        JButton sendBtn = new JButton("Send");
 
         sendBtn.setBackground(new Color(166, 95, 0));
 
@@ -75,12 +69,10 @@ public class ForgotPasswordPanel extends RoundedPanel {
 
         sendBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // FOOTER
         JLabel footer = new JLabel("Please check your email.");
 
         footer.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // ADD COMPONENTS
         add(backBtn);
 
         add(Box.createVerticalGlue());

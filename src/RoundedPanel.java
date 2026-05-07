@@ -6,7 +6,6 @@ public class RoundedPanel extends JPanel {
     public RoundedPanel() {
 
         setOpaque(false);
-
     }
 
     @Override
