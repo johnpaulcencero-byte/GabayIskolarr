@@ -6,12 +6,13 @@ public class SignupPanel extends RoundedPanel {
 
     public SignupPanel(AuthFrame frame) {
 
-        setPreferredSize(new Dimension(430, 420));
+        setPreferredSize(new Dimension(430, 500));
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         setBorder(new EmptyBorder(30, 45, 30, 45));
 
+        // LOGO
         ImageIcon logoIcon = new ImageIcon("assets/logo.png");
 
         Image img = logoIcon.getImage().getScaledInstance(
@@ -23,19 +24,30 @@ public class SignupPanel extends RoundedPanel {
 
         logo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        // TITLE
         JLabel title = new JLabel("Gabay - Iskolar");
 
         title.setFont(new Font("Arial", Font.BOLD, 30));
 
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        // FULL NAME
+        JTextField fullName = new JTextField();
+
+        fullName.setMaximumSize(new Dimension(300, 40));
+
+        fullName.setBorder(
+                BorderFactory.createTitledBorder("Full Name"));
+
+        // EMAIL
         JTextField email = new JTextField();
 
         email.setMaximumSize(new Dimension(300, 40));
 
         email.setBorder(
-                BorderFactory.createTitledBorder("Username / Email"));
+                BorderFactory.createTitledBorder("Email"));
 
+        // PASSWORD
         JPasswordField password = new JPasswordField();
 
         password.setMaximumSize(new Dimension(300, 40));
@@ -43,6 +55,7 @@ public class SignupPanel extends RoundedPanel {
         password.setBorder(
                 BorderFactory.createTitledBorder("Password"));
 
+        // SIGNUP BUTTON
         JButton signupBtn = new JButton("Sign up");
 
         signupBtn.setBackground(new Color(166, 95, 0));
@@ -55,6 +68,40 @@ public class SignupPanel extends RoundedPanel {
 
         signupBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        signupBtn.addActionListener(e -> {
+
+            String name = fullName.getText();
+
+            String userEmail = email.getText();
+
+            String userPassword = new String(password.getPassword());
+
+            if (name.isEmpty() ||
+                    userEmail.isEmpty() ||
+                    userPassword.isEmpty()) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Please fill in all fields.");
+
+                return;
+            }
+
+            // SAVE USER INFO
+            UserSession.fullName = name;
+
+            UserSession.email = userEmail;
+
+            UserSession.password = userPassword;
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Signup successful!");
+
+            frame.showPage("login");
+        });
+
+        // LOGIN BUTTON
         JButton loginBtn = new JButton("Already a User? Log in");
 
         loginBtn.setBorderPainted(false);
@@ -76,6 +123,10 @@ public class SignupPanel extends RoundedPanel {
         add(title);
 
         add(Box.createRigidArea(new Dimension(0, 30)));
+
+        add(fullName);
+
+        add(Box.createRigidArea(new Dimension(0, 15)));
 
         add(email);
 

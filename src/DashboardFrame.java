@@ -4,7 +4,7 @@ import java.awt.*;
 
 public class DashboardFrame extends JFrame {
 
-    public DashboardFrame() {
+    public DashboardFrame(String fullName) {
 
         setTitle("Dashboard");
 
@@ -94,7 +94,7 @@ public class DashboardFrame extends JFrame {
 
         topPanel.setOpaque(false);
 
-        JLabel welcome = new JLabel("Welcome, Caroline Tomakin!");
+        JLabel welcome = new JLabel("Welcome, " + fullName + "!");
 
         welcome.setFont(new Font("Arial", Font.BOLD, 28));
 

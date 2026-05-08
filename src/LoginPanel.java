@@ -31,13 +31,13 @@ public class LoginPanel extends RoundedPanel {
 
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // USERNAME
+        // EMAIL
         JTextField username = new JTextField();
 
         username.setMaximumSize(new Dimension(300, 40));
 
         username.setBorder(
-                BorderFactory.createTitledBorder("Username / Email"));
+                BorderFactory.createTitledBorder("Email"));
 
         // PASSWORD
         JPasswordField password = new JPasswordField();
@@ -62,9 +62,23 @@ public class LoginPanel extends RoundedPanel {
 
         loginBtn.addActionListener(e -> {
 
-            new DashboardFrame();
+            String userInput = username.getText();
 
-            frame.dispose();
+            String userPass = new String(password.getPassword());
+
+            if (userInput.equals(UserSession.email) &&
+                    userPass.equals(UserSession.password)) {
+
+                new DashboardFrame(UserSession.fullName);
+
+                frame.dispose();
+
+            } else {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Invalid email or password.");
+            }
         });
 
         // FORGOT BUTTON
