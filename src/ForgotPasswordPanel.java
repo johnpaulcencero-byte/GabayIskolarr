@@ -6,12 +6,15 @@ public class ForgotPasswordPanel extends RoundedPanel {
 
     public ForgotPasswordPanel(AuthFrame frame) {
 
-        setPreferredSize(new Dimension(430, 420));
+        setPreferredSize(new Dimension(430, 500));
+
+        setBackground(Color.WHITE);
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        setBorder(new EmptyBorder(25, 45, 30, 45));
+        setBorder(new EmptyBorder(30, 45, 30, 45));
 
+        // BACK BUTTON
         JButton backBtn = new JButton("←");
 
         backBtn.setFont(new Font("Arial", Font.BOLD, 24));
@@ -20,29 +23,32 @@ public class ForgotPasswordPanel extends RoundedPanel {
 
         backBtn.setContentAreaFilled(false);
 
+        backBtn.setForeground(new Color(166, 95, 0));
+
         backBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        backBtn.addActionListener(e -> {
-            frame.showPage("login");
-        });
+        backBtn.addActionListener(e -> frame.showPage("login"));
 
+        // LOGO
         ImageIcon logoIcon = new ImageIcon("assets/logo.png");
 
         Image img = logoIcon.getImage().getScaledInstance(
                 100,
                 100,
-                Image.SCALE_SMOOTH);
+                Image.SCALE_AREA_AVERAGING);
 
         JLabel logo = new JLabel(new ImageIcon(img));
 
         logo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel title = new JLabel("Forgot Password");
+        // TITLE
+        JLabel title = new JLabel("Gabay - Iskolar");
 
-        title.setFont(new Font("Arial", Font.BOLD, 28));
+        title.setFont(new Font("Arial", Font.BOLD, 30));
 
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        // DESCRIPTION
         JLabel description = new JLabel(
                 "Confirm your email and we'll send instructions.");
 
@@ -50,13 +56,17 @@ public class ForgotPasswordPanel extends RoundedPanel {
 
         description.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        // EMAIL FIELD
         JTextField email = new JTextField();
-
-        email.setMaximumSize(new Dimension(300, 40));
 
         email.setBorder(
                 BorderFactory.createTitledBorder("Email"));
 
+        email.setPreferredSize(new Dimension(300, 40));
+
+        email.setMaximumSize(new Dimension(300, 40));
+
+        // SEND BUTTON
         JButton sendBtn = new JButton("Send");
 
         sendBtn.setBackground(new Color(166, 95, 0));
@@ -65,14 +75,18 @@ public class ForgotPasswordPanel extends RoundedPanel {
 
         sendBtn.setFocusPainted(false);
 
+        sendBtn.setPreferredSize(new Dimension(300, 40));
+
         sendBtn.setMaximumSize(new Dimension(300, 40));
 
         sendBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        // FOOTER
         JLabel footer = new JLabel("Please check your email.");
 
         footer.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        // ADD COMPONENTS
         add(backBtn);
 
         add(Box.createVerticalGlue());

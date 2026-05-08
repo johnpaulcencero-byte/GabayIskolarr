@@ -6,6 +6,8 @@ public class DashboardFrame extends JFrame {
 
     public DashboardFrame(String fullName) {
 
+        UserSession.fullName = fullName;
+
         setTitle("Dashboard");
 
         setSize(1200, 720);
@@ -14,59 +16,111 @@ public class DashboardFrame extends JFrame {
 
         setLocationRelativeTo(null);
 
-        setLayout(new BorderLayout());
+        setResizable(false);
 
         JPanel mainPanel = new JPanel(new BorderLayout());
 
         mainPanel.setBackground(new Color(245, 245, 245));
 
-        // NAVBAR
+        JPanel navbar = createNavbar();
+
+        JPanel content = createContent(fullName);
+
+        mainPanel.add(navbar, BorderLayout.NORTH);
+
+        mainPanel.add(content, BorderLayout.CENTER);
+
+        add(mainPanel);
+
+        setVisible(true);
+    }
+
+    // ================= NAVBAR =================
+    private JPanel createNavbar() {
+
         JPanel navbar = new JPanel(new BorderLayout());
 
         navbar.setBackground(Color.WHITE);
 
-        navbar.setBorder(new EmptyBorder(20, 30, 20, 30));
+        navbar.setBorder(
+                new EmptyBorder(20, 40, 20, 40));
 
-        JPanel leftNav = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        // ================= LEFT NAV =================
+        JPanel leftNav = new JPanel(
+                new FlowLayout(FlowLayout.LEFT, 15, 0));
 
         leftNav.setOpaque(false);
 
-        ImageIcon logoIcon = new ImageIcon("assets/logo.png");
+        ImageIcon logoIcon =
+                new ImageIcon("assets/logo.png");
 
         Image img = logoIcon.getImage().getScaledInstance(
-                40,
-                40,
+                45,
+                45,
                 Image.SCALE_SMOOTH);
 
         JLabel logo = new JLabel(new ImageIcon(img));
 
         JLabel title = new JLabel("Gabay - Iskolar");
 
-        title.setFont(new Font("Arial", Font.BOLD, 24));
+        title.setFont(
+                new Font("Arial", Font.BOLD, 28));
 
         leftNav.add(logo);
 
         leftNav.add(title);
 
-        JPanel rightNav = new JPanel(new FlowLayout(FlowLayout.RIGHT, 20, 0));
+        // ================= RIGHT NAV =================
+        JPanel rightNav = new JPanel(
+                new FlowLayout(FlowLayout.RIGHT, 30, 0));
 
         rightNav.setOpaque(false);
 
-        rightNav.add(createNavButton("Home"));
+        JButton homeBtn =
+                createActiveNavButton("Home");
 
-        rightNav.add(createNavButton("About Us"));
+        JButton aboutBtn =
+                createNavButton("About Us");
 
-        rightNav.add(createNavButton("Settings"));
+        JButton settingsBtn =
+                createNavButton("Settings");
 
+        aboutBtn.addActionListener(e -> {
+
+            new AboutUsFrame(
+                    UserSession.fullName);
+
+            dispose();
+        });
+
+        settingsBtn.addActionListener(e -> {
+
+            new SettingsFrame(
+                    UserSession.fullName);
+
+            dispose();
+        });
+
+        rightNav.add(homeBtn);
+
+        rightNav.add(aboutBtn);
+
+        rightNav.add(settingsBtn);
+
+        // ================= LOGOUT BUTTON =================
         JButton logoutBtn = new JButton("Log-out");
 
-        logoutBtn.setBackground(new Color(96, 0, 0));
+        logoutBtn.setBackground(
+                new Color(220, 0, 0));
 
         logoutBtn.setForeground(Color.WHITE);
 
         logoutBtn.setFocusPainted(false);
 
-        logoutBtn.setPreferredSize(new Dimension(100, 35));
+        logoutBtn.setBorderPainted(false);
+
+        logoutBtn.setPreferredSize(
+                new Dimension(100, 35));
 
         logoutBtn.addActionListener(e -> {
 
@@ -81,111 +135,281 @@ public class DashboardFrame extends JFrame {
 
         navbar.add(rightNav, BorderLayout.EAST);
 
-        // CONTENT
+        return navbar;
+    }
+
+    // ================= CONTENT =================
+    private JPanel createContent(String fullName) {
+
         JPanel content = new JPanel();
 
-        content.setBackground(new Color(245, 245, 245));
+        content.setBackground(
+                new Color(245, 245, 245));
 
-        content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
+        content.setBorder(
+                new EmptyBorder(40, 60, 40, 60));
 
-        content.setBorder(new EmptyBorder(40, 70, 40, 70));
+        content.setLayout(
+                new BoxLayout(content, BoxLayout.Y_AXIS));
 
-        JPanel topPanel = new JPanel(new BorderLayout());
+        // ================= TOP PANEL =================
+        JPanel topPanel = new JPanel(
+                new BorderLayout());
 
         topPanel.setOpaque(false);
 
-        JLabel welcome = new JLabel("Welcome, " + fullName + "!");
+        JLabel welcome = new JLabel(
+                "Welcome, " + fullName + "!");
 
-        welcome.setFont(new Font("Arial", Font.BOLD, 28));
+        welcome.setFont(
+                new Font("Arial", Font.BOLD, 28));
 
-        JButton addBtn = new JButton("+ Add Scholarship");
+        JButton addBtn = new JButton(
+                "+ Add Scholarship");
 
-        addBtn.setBackground(new Color(96, 0, 0));
+        addBtn.setBackground(
+                new Color(109, 8, 0));
 
         addBtn.setForeground(Color.WHITE);
 
         addBtn.setFocusPainted(false);
 
-        addBtn.setPreferredSize(new Dimension(180, 45));
+        addBtn.setBorderPainted(false);
+
+        addBtn.setPreferredSize(
+                new Dimension(190, 45));
+
+        // ================= OPEN ADD SCHOLARSHIP PAGE =================
+        addBtn.addActionListener(e -> {
+
+            new AddScholarshipFrame(
+                    UserSession.fullName);
+
+            dispose();
+        });
 
         topPanel.add(welcome, BorderLayout.WEST);
 
         topPanel.add(addBtn, BorderLayout.EAST);
 
-        // CARDS
-        JPanel cards = new JPanel(new GridLayout(1, 4, 20, 20));
+        // ================= CARDS =================
+        JPanel cards = new JPanel(
+                new GridLayout(1, 4, 20, 0));
 
         cards.setOpaque(false);
 
-        cards.setMaximumSize(new Dimension(1000, 160));
+        cards.add(createClickableCard(
+                "TOTAL",
+                "0",
+                Color.BLACK,
+                new String[][]{}));
 
-        cards.add(createCard("TOTAL", "0", Color.BLACK));
+        cards.add(createClickableCard(
+                "PREVIEW",
+                "0",
+                new Color(84, 130, 230),
+                new String[][]{}));
 
-        cards.add(createCard("PREVIEW", "0", Color.BLUE));
+        cards.add(createClickableCard(
+                "ONGOING",
+                "0",
+                new Color(230, 150, 60),
+                new String[][]{}));
 
-        cards.add(createCard("ONGOING", "0", Color.ORANGE));
+        cards.add(createClickableCard(
+                "DONE",
+                "0",
+                new Color(100, 150, 20),
+                new String[][]{}));
 
-        cards.add(createCard("DONE", "0", Color.GREEN));
-
-        // LIST HEADER
-        JPanel listHeader = new JPanel(new BorderLayout());
+        // ================= LIST HEADER =================
+        JPanel listHeader = new JPanel(
+                new BorderLayout());
 
         listHeader.setOpaque(false);
 
-        JLabel left = new JLabel("Scholarship list");
+        JLabel left = new JLabel(
+                "Scholarship list");
 
-        left.setFont(new Font("Arial", Font.BOLD, 22));
+        left.setFont(
+                new Font("Arial", Font.BOLD, 24));
 
         JLabel right = new JLabel("Status");
 
-        right.setFont(new Font("Arial", Font.BOLD, 22));
+        right.setFont(
+                new Font("Arial", Font.BOLD, 24));
 
         listHeader.add(left, BorderLayout.WEST);
 
         listHeader.add(right, BorderLayout.EAST);
 
-        // LIST
-        JPanel scholarshipList = new JPanel();
+        // ================= LIST =================
+        JPanel list = new JPanel();
 
-        scholarshipList.setOpaque(false);
+        list.setOpaque(false);
 
-        scholarshipList.setLayout(new BoxLayout(scholarshipList, BoxLayout.Y_AXIS));
+        list.setLayout(
+                new BoxLayout(list, BoxLayout.Y_AXIS));
 
-        scholarshipList.add(createScholarshipCard());
+        list.add(createEmptyScholarshipCard());
 
-        scholarshipList.add(Box.createRigidArea(new Dimension(0, 20)));
+        list.add(Box.createRigidArea(
+                new Dimension(0, 20)));
 
-        scholarshipList.add(createScholarshipCard());
+        list.add(createEmptyScholarshipCard());
 
-        JScrollPane scrollPane = new JScrollPane(scholarshipList);
+        JScrollPane scroll = new JScrollPane(list);
 
-        scrollPane.setBorder(null);
+        scroll.setBorder(null);
 
-        scrollPane.getViewport().setBackground(new Color(245, 245, 245));
+        scroll.getViewport().setBackground(
+                new Color(245, 245, 245));
 
+        // ================= ADD CONTENT =================
         content.add(topPanel);
 
-        content.add(Box.createRigidArea(new Dimension(0, 40)));
+        content.add(Box.createRigidArea(
+                new Dimension(0, 40)));
 
         content.add(cards);
 
-        content.add(Box.createRigidArea(new Dimension(0, 50)));
+        content.add(Box.createRigidArea(
+                new Dimension(0, 50)));
 
         content.add(listHeader);
 
-        content.add(Box.createRigidArea(new Dimension(0, 20)));
+        content.add(Box.createRigidArea(
+                new Dimension(0, 20)));
 
-        content.add(scrollPane);
+        content.add(scroll);
 
-        mainPanel.add(navbar, BorderLayout.NORTH);
-
-        mainPanel.add(content, BorderLayout.CENTER);
-
-        add(mainPanel);
-
-        setVisible(true);
+        return content;
     }
 
+    // ================= CLICKABLE CARD =================
+    private JPanel createClickableCard(String title,
+                                       String number,
+                                       Color color,
+                                       String[][] scholarships) {
+
+        JPanel card = createCard(
+                title,
+                number,
+                color);
+
+        card.setCursor(
+                new Cursor(Cursor.HAND_CURSOR));
+
+        card.addMouseListener(
+                new java.awt.event.MouseAdapter() {
+
+                    @Override
+                    public void mouseClicked(
+                            java.awt.event.MouseEvent e) {
+
+                        new ScholarshipPopup(
+                                DashboardFrame.this,
+                                title,
+                                scholarships);
+                    }
+
+                    @Override
+                    public void mouseEntered(
+                            java.awt.event.MouseEvent e) {
+
+                        card.setBackground(
+                                new Color(240, 240, 240));
+                    }
+
+                    @Override
+                    public void mouseExited(
+                            java.awt.event.MouseEvent e) {
+
+                        card.setBackground(
+                                Color.WHITE);
+                    }
+                });
+
+        return card;
+    }
+
+    // ================= CARD =================
+    private JPanel createCard(String title,
+                              String number,
+                              Color color) {
+
+        JPanel card = new JPanel();
+
+        card.setLayout(
+                new BoxLayout(
+                        card,
+                        BoxLayout.Y_AXIS));
+
+        card.setBackground(Color.WHITE);
+
+        card.setBorder(
+                new EmptyBorder(
+                        18,
+                        20,
+                        18,
+                        20));
+
+        JLabel t = new JLabel(title);
+
+        t.setFont(
+                new Font("Arial", Font.BOLD, 22));
+
+        t.setAlignmentX(
+                Component.CENTER_ALIGNMENT);
+
+        JLabel n = new JLabel(number);
+
+        n.setFont(
+                new Font("Arial", Font.BOLD, 62));
+
+        n.setForeground(color);
+
+        n.setAlignmentX(
+                Component.CENTER_ALIGNMENT);
+
+        card.add(t);
+
+        card.add(Box.createRigidArea(
+                new Dimension(0, 10)));
+
+        card.add(n);
+
+        return card;
+    }
+
+    // ================= EMPTY CARD =================
+    private JPanel createEmptyScholarshipCard() {
+
+        JPanel panel = new JPanel(
+                new BorderLayout());
+
+        panel.setBackground(
+                new Color(235, 235, 235));
+
+        panel.setPreferredSize(
+                new Dimension(1000, 90));
+
+        panel.setMaximumSize(
+                new Dimension(
+                        Integer.MAX_VALUE,
+                        90));
+
+        panel.setBorder(
+                new EmptyBorder(
+                        15,
+                        20,
+                        15,
+                        20));
+
+        return panel;
+    }
+
+    // ================= NAV BUTTON =================
     private JButton createNavButton(String text) {
 
         JButton btn = new JButton(text);
@@ -196,73 +420,31 @@ public class DashboardFrame extends JFrame {
 
         btn.setFocusPainted(false);
 
-        btn.setFont(new Font("Arial", Font.PLAIN, 15));
+        btn.setFont(
+                new Font("Arial", Font.PLAIN, 16));
 
         return btn;
     }
 
-    private JPanel createCard(
-            String title,
-            String number,
-            Color color) {
+    // ================= ACTIVE BUTTON =================
+    private JButton createActiveNavButton(String text) {
 
-        JPanel card = new JPanel();
+        JButton btn = new JButton(text);
 
-        card.setBackground(Color.WHITE);
+        btn.setBackground(
+                new Color(109, 8, 0));
 
-        card.setBorder(new EmptyBorder(20, 20, 20, 20));
+        btn.setForeground(Color.WHITE);
 
-        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+        btn.setFocusPainted(false);
 
-        JLabel titleLabel = new JLabel(title);
+        btn.setBorderPainted(false);
 
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        btn.setOpaque(true);
 
-        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btn.setFont(
+                new Font("Arial", Font.PLAIN, 16));
 
-        JLabel numberLabel = new JLabel(number);
-
-        numberLabel.setFont(new Font("Arial", Font.BOLD, 55));
-
-        numberLabel.setForeground(color);
-
-        numberLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        card.add(titleLabel);
-
-        card.add(Box.createRigidArea(new Dimension(0, 10)));
-
-        card.add(numberLabel);
-
-        return card;
-    }
-
-    private JPanel createScholarshipCard() {
-
-        JPanel panel = new JPanel(new BorderLayout());
-
-        panel.setBackground(new Color(230, 230, 230));
-
-        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
-
-        panel.setPreferredSize(new Dimension(900, 100));
-
-        panel.setBorder(new EmptyBorder(20, 20, 20, 20));
-
-        JLabel title = new JLabel("No scholarship added yet.");
-
-        title.setFont(new Font("Arial", Font.PLAIN, 18));
-
-        JLabel status = new JLabel("Pending");
-
-        status.setFont(new Font("Arial", Font.BOLD, 16));
-
-        status.setForeground(Color.ORANGE);
-
-        panel.add(title, BorderLayout.WEST);
-
-        panel.add(status, BorderLayout.EAST);
-
-        return panel;
+        return btn;
     }
 }

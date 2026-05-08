@@ -6,7 +6,9 @@ public class LoginPanel extends RoundedPanel {
 
     public LoginPanel(AuthFrame frame) {
 
-        setPreferredSize(new Dimension(430, 420));
+        setPreferredSize(new Dimension(430, 500));
+
+        setBackground(Color.WHITE);
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -18,7 +20,7 @@ public class LoginPanel extends RoundedPanel {
         Image img = logoIcon.getImage().getScaledInstance(
                 100,
                 100,
-                Image.SCALE_SMOOTH);
+                Image.SCALE_AREA_AVERAGING);
 
         JLabel logo = new JLabel(new ImageIcon(img));
 
@@ -31,21 +33,35 @@ public class LoginPanel extends RoundedPanel {
 
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        // FULL NAME
+        JTextField fullName = new JTextField();
+
+        fullName.setBorder(
+                BorderFactory.createTitledBorder("Full Name"));
+
+        fullName.setPreferredSize(new Dimension(300, 40));
+
+        fullName.setMaximumSize(new Dimension(300, 40));
+
         // EMAIL
-        JTextField username = new JTextField();
+        JTextField email = new JTextField();
 
-        username.setMaximumSize(new Dimension(300, 40));
-
-        username.setBorder(
+        email.setBorder(
                 BorderFactory.createTitledBorder("Email"));
+
+        email.setPreferredSize(new Dimension(300, 40));
+
+        email.setMaximumSize(new Dimension(300, 40));
 
         // PASSWORD
         JPasswordField password = new JPasswordField();
 
-        password.setMaximumSize(new Dimension(300, 40));
-
         password.setBorder(
                 BorderFactory.createTitledBorder("Password"));
+
+        password.setPreferredSize(new Dimension(300, 40));
+
+        password.setMaximumSize(new Dimension(300, 40));
 
         // LOGIN BUTTON
         JButton loginBtn = new JButton("Log in");
@@ -56,33 +72,32 @@ public class LoginPanel extends RoundedPanel {
 
         loginBtn.setFocusPainted(false);
 
+        loginBtn.setPreferredSize(new Dimension(300, 40));
+
         loginBtn.setMaximumSize(new Dimension(300, 40));
 
         loginBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         loginBtn.addActionListener(e -> {
 
-            String userInput = username.getText();
+            String name = fullName.getText();
 
-            String userPass = new String(password.getPassword());
-
-            if (userInput.equals(UserSession.email) &&
-                    userPass.equals(UserSession.password)) {
-
-                new DashboardFrame(UserSession.fullName);
-
-                frame.dispose();
-
-            } else {
+            if (name.isEmpty()) {
 
                 JOptionPane.showMessageDialog(
                         this,
-                        "Invalid email or password.");
+                        "Please enter full name.");
+
+                return;
             }
+
+            new DashboardFrame(name);
+
+            frame.dispose();
         });
 
         // FORGOT BUTTON
-        JButton forgotBtn = new JButton("Forgot your password?");
+        JButton forgotBtn = new JButton("Forgot password?");
 
         forgotBtn.setBorderPainted(false);
 
@@ -90,9 +105,7 @@ public class LoginPanel extends RoundedPanel {
 
         forgotBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        forgotBtn.addActionListener(e -> {
-            frame.showPage("forgot");
-        });
+        forgotBtn.addActionListener(e -> frame.showPage("forgot"));
 
         // SIGNUP BUTTON
         JButton signupBtn = new JButton("Sign up");
@@ -103,10 +116,9 @@ public class LoginPanel extends RoundedPanel {
 
         signupBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        signupBtn.addActionListener(e -> {
-            frame.showPage("signup");
-        });
+        signupBtn.addActionListener(e -> frame.showPage("signup"));
 
+        // ADD COMPONENTS
         add(Box.createVerticalGlue());
 
         add(logo);
@@ -115,11 +127,15 @@ public class LoginPanel extends RoundedPanel {
 
         add(title);
 
-        add(Box.createRigidArea(new Dimension(0, 30)));
+        add(Box.createRigidArea(new Dimension(0, 25)));
 
-        add(username);
+        add(fullName);
 
-        add(Box.createRigidArea(new Dimension(0, 15)));
+        add(Box.createRigidArea(new Dimension(0, 12)));
+
+        add(email);
+
+        add(Box.createRigidArea(new Dimension(0, 12)));
 
         add(password);
 
