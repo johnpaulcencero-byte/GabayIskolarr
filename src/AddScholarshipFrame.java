@@ -473,12 +473,7 @@ public class AddScholarshipFrame extends JFrame {
 
         // ================= RIGHT =================
         JButton addBtn =
-                new JButton("+ Add");
-
-        addBtn.setBackground(
-                new Color(58, 99, 193));
-
-        addBtn.setForeground(Color.WHITE);
+                new JButton();
 
         addBtn.setFocusPainted(false);
 
@@ -487,12 +482,69 @@ public class AddScholarshipFrame extends JFrame {
         addBtn.setPreferredSize(
                 new Dimension(100, 35));
 
-        addBtn.addActionListener(e -> {
+        // ================= CHECK IF ALREADY ADDED =================
+        boolean alreadyAdded = false;
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    title + " added successfully!");
-        });
+        for (Scholarship s :
+                ScholarshipManager.scholarships) {
+
+            if (s.getName().equals(title)) {
+
+                alreadyAdded = true;
+
+                break;
+            }
+        }
+
+        // ================= BUTTON STATE =================
+        if (alreadyAdded) {
+
+            addBtn.setText("Added");
+
+            addBtn.setEnabled(false);
+
+            addBtn.setBackground(
+                    new Color(120, 120, 120));
+
+            addBtn.setForeground(Color.WHITE);
+
+        } else {
+
+            addBtn.setText("+ Add");
+
+            addBtn.setBackground(
+                    new Color(58, 99, 193));
+
+            addBtn.setForeground(Color.WHITE);
+
+            // ================= ADD FUNCTION =================
+            addBtn.addActionListener(e -> {
+
+                ScholarshipManager.scholarships.add(
+                        new Scholarship(
+                                title,
+                                deadline,
+                                "Pending"));
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        title + " added successfully!");
+
+                // CHANGE BUTTON
+                addBtn.setText("Added");
+
+                addBtn.setEnabled(false);
+
+                addBtn.setBackground(
+                        new Color(120, 120, 120));
+
+                // REFRESH DASHBOARD
+                new DashboardFrame(
+                        UserSession.fullName);
+
+                dispose();
+            });
+        }
 
         JPanel right =
                 new JPanel(

@@ -1,6 +1,7 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class DashboardFrame extends JFrame {
 
@@ -45,7 +46,6 @@ public class DashboardFrame extends JFrame {
         navbar.setBorder(
                 new EmptyBorder(20, 40, 20, 40));
 
-        // ================= LEFT NAV =================
         JPanel leftNav = new JPanel(
                 new FlowLayout(FlowLayout.LEFT, 15, 0));
 
@@ -70,7 +70,6 @@ public class DashboardFrame extends JFrame {
 
         leftNav.add(title);
 
-        // ================= RIGHT NAV =================
         JPanel rightNav = new JPanel(
                 new FlowLayout(FlowLayout.RIGHT, 30, 0));
 
@@ -107,7 +106,6 @@ public class DashboardFrame extends JFrame {
 
         rightNav.add(settingsBtn);
 
-        // ================= LOGOUT BUTTON =================
         JButton logoutBtn = new JButton("Log-out");
 
         logoutBtn.setBackground(
@@ -179,7 +177,6 @@ public class DashboardFrame extends JFrame {
         addBtn.setPreferredSize(
                 new Dimension(190, 45));
 
-        // ================= OPEN ADD SCHOLARSHIP PAGE =================
         addBtn.addActionListener(e -> {
 
             new AddScholarshipFrame(
@@ -192,6 +189,35 @@ public class DashboardFrame extends JFrame {
 
         topPanel.add(addBtn, BorderLayout.EAST);
 
+        // ================= COUNTS =================
+        int total =
+                ScholarshipManager.scholarships.size();
+
+        int pending = 0;
+
+        int ongoing = 0;
+
+        int done = 0;
+
+        for (Scholarship s :
+                ScholarshipManager.scholarships) {
+
+            switch (s.getStatus()) {
+
+                case "Pending":
+                    pending++;
+                    break;
+
+                case "Ongoing":
+                    ongoing++;
+                    break;
+
+                case "Done":
+                    done++;
+                    break;
+            }
+        }
+
         // ================= CARDS =================
         JPanel cards = new JPanel(
                 new GridLayout(1, 4, 20, 0));
@@ -200,29 +226,29 @@ public class DashboardFrame extends JFrame {
 
         cards.add(createClickableCard(
                 "TOTAL",
-                "0",
+                String.valueOf(total),
                 Color.BLACK,
-                new String[][]{}));
+                getScholarshipsByStatus(null)));
 
         cards.add(createClickableCard(
                 "PREVIEW",
-                "0",
+                String.valueOf(pending),
                 new Color(84, 130, 230),
-                new String[][]{}));
+                getScholarshipsByStatus("Pending")));
 
         cards.add(createClickableCard(
                 "ONGOING",
-                "0",
+                String.valueOf(ongoing),
                 new Color(230, 150, 60),
-                new String[][]{}));
+                getScholarshipsByStatus("Ongoing")));
 
         cards.add(createClickableCard(
                 "DONE",
-                "0",
+                String.valueOf(done),
                 new Color(100, 150, 20),
-                new String[][]{}));
+                getScholarshipsByStatus("Done")));
 
-        // ================= LIST HEADER =================
+        // ================= HEADER =================
         JPanel listHeader = new JPanel(
                 new BorderLayout());
 
@@ -251,12 +277,23 @@ public class DashboardFrame extends JFrame {
         list.setLayout(
                 new BoxLayout(list, BoxLayout.Y_AXIS));
 
-        list.add(createEmptyScholarshipCard());
+        if (ScholarshipManager.scholarships.isEmpty()) {
 
-        list.add(Box.createRigidArea(
-                new Dimension(0, 20)));
+            list.add(createEmptyScholarshipCard());
 
-        list.add(createEmptyScholarshipCard());
+        } else {
+
+            for (Scholarship s :
+                    ScholarshipManager.scholarships) {
+
+                list.add(createScholarshipCard(
+                        s.getName(),
+                        s.getStatus()));
+
+                list.add(Box.createRigidArea(
+                        new Dimension(0, 20)));
+            }
+        }
 
         JScrollPane scroll = new JScrollPane(list);
 
@@ -265,7 +302,7 @@ public class DashboardFrame extends JFrame {
         scroll.getViewport().setBackground(
                 new Color(245, 245, 245));
 
-        // ================= ADD CONTENT =================
+        // ================= ADD =================
         content.add(topPanel);
 
         content.add(Box.createRigidArea(
@@ -284,6 +321,29 @@ public class DashboardFrame extends JFrame {
         content.add(scroll);
 
         return content;
+    }
+
+    // ================= GET BY STATUS =================
+    private String[][] getScholarshipsByStatus(
+            String status) {
+
+        ArrayList<String[]> list =
+                new ArrayList<>();
+
+        for (Scholarship s :
+                ScholarshipManager.scholarships) {
+
+            if (status == null ||
+                    s.getStatus().equals(status)) {
+
+                list.add(new String[]{
+                        s.getName(),
+                        s.getDeadline()
+                });
+            }
+        }
+
+        return list.toArray(new String[0][]);
     }
 
     // ================= CLICKABLE CARD =================
@@ -311,22 +371,6 @@ public class DashboardFrame extends JFrame {
                                 DashboardFrame.this,
                                 title,
                                 scholarships);
-                    }
-
-                    @Override
-                    public void mouseEntered(
-                            java.awt.event.MouseEvent e) {
-
-                        card.setBackground(
-                                new Color(240, 240, 240));
-                    }
-
-                    @Override
-                    public void mouseExited(
-                            java.awt.event.MouseEvent e) {
-
-                        card.setBackground(
-                                Color.WHITE);
                     }
                 });
 
@@ -382,7 +426,57 @@ public class DashboardFrame extends JFrame {
         return card;
     }
 
-    // ================= EMPTY CARD =================
+    // ================= SCHOLARSHIP CARD =================
+    private JPanel createScholarshipCard(String name,
+                                         String status) {
+
+        JPanel panel =
+                new JPanel(new BorderLayout());
+
+        panel.setBackground(Color.WHITE);
+
+        panel.setPreferredSize(
+                new Dimension(1000, 90));
+
+        panel.setMaximumSize(
+                new Dimension(
+                        Integer.MAX_VALUE,
+                        90));
+
+        panel.setBorder(
+                new EmptyBorder(
+                        15,
+                        20,
+                        15,
+                        20));
+
+        JLabel title =
+                new JLabel(name);
+
+        title.setFont(
+                new Font("Arial",
+                        Font.BOLD,
+                        22));
+
+        JLabel statusLabel =
+                new JLabel(status);
+
+        statusLabel.setFont(
+                new Font("Arial",
+                        Font.BOLD,
+                        18));
+
+        statusLabel.setForeground(
+                new Color(84, 130, 230));
+
+        panel.add(title, BorderLayout.WEST);
+
+        panel.add(statusLabel, BorderLayout.EAST);
+
+        return panel;
+    }
+
+    // ================= EMPTY =================
     private JPanel createEmptyScholarshipCard() {
 
         JPanel panel = new JPanel(
@@ -409,7 +503,7 @@ public class DashboardFrame extends JFrame {
         return panel;
     }
 
-    // ================= NAV BUTTON =================
+    // ================= NAV =================
     private JButton createNavButton(String text) {
 
         JButton btn = new JButton(text);
@@ -426,7 +520,7 @@ public class DashboardFrame extends JFrame {
         return btn;
     }
 
-    // ================= ACTIVE BUTTON =================
+    // ================= ACTIVE =================
     private JButton createActiveNavButton(String text) {
 
         JButton btn = new JButton(text);
