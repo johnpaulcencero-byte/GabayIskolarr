@@ -487,6 +487,58 @@ public class DashboardFrame extends JFrame {
                         Font.BOLD,
                         22));
 
+        title.setCursor(
+                new Cursor(Cursor.HAND_CURSOR));
+
+        title.setForeground(
+                new Color(58, 99, 193)); // blue clickable color
+
+        title.addMouseListener(
+                new java.awt.event.MouseAdapter() {
+
+                    @Override
+                    public void mouseClicked(
+                            java.awt.event.MouseEvent e) {
+
+                        String deadlineValue = "";
+
+                        for (Scholarship s :
+                                ScholarshipManager.scholarships) {
+
+                            if (s.getName().equals(name)) {
+
+                                deadlineValue =
+                                        s.getDeadline();
+
+                                break;
+                            }
+                        }
+
+                        new ScholarshipDetailsFrame(
+                                name,
+                                deadlineValue);
+
+                        dispose();
+                    }
+
+                    @Override
+                    public void mouseEntered(
+                            java.awt.event.MouseEvent e) {
+
+                        title.setText(
+                                "<html><u>" +
+                                        name +
+                                        "</u></html>");
+                    }
+
+                    @Override
+                    public void mouseExited(
+                            java.awt.event.MouseEvent e) {
+
+                        title.setText(name);
+                    }
+                });
+
         JLabel deadline =
                 new JLabel();
 
