@@ -329,7 +329,7 @@ public class ScholarshipDetailsFrame extends JFrame {
                         new Scholarship(
                                 scholarshipTitle,
                                 deadline,
-                                "Ongoing"));
+                                "Preview")); // changed from Ongoing
 
                 JOptionPane.showMessageDialog(
                         this,
@@ -342,6 +342,8 @@ public class ScholarshipDetailsFrame extends JFrame {
 
                 addedBtn.setBackground(
                         new Color(140, 160, 210));
+
+                addedBtn.setForeground(Color.WHITE);
             });
         }
 
