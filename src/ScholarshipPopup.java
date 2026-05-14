@@ -51,7 +51,7 @@ public class ScholarshipPopup extends JDialog {
 
         closePanel.setOpaque(false);
 
-        JButton closeBtn = new JButton("✕");
+        JButton closeBtn = new JButton("-");
 
         closeBtn.setPreferredSize(
                 new Dimension(35, 30));

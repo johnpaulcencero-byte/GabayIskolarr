@@ -29,13 +29,11 @@ public class SettingsFrame extends JFrame {
         navbar.setBackground(Color.WHITE);
         navbar.setBorder(new EmptyBorder(20, 40, 20, 40));
 
-        // LEFT
         JPanel left = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 0));
         left.setOpaque(false);
 
         ImageIcon logoIcon = new ImageIcon("assets/logo.png");
         Image img = logoIcon.getImage().getScaledInstance(45, 45, Image.SCALE_SMOOTH);
-
         JLabel logo = new JLabel(new ImageIcon(img));
 
         JLabel title = new JLabel("Gabay - Iskolar");
@@ -44,8 +42,7 @@ public class SettingsFrame extends JFrame {
         left.add(logo);
         left.add(title);
 
-        // RIGHT
-        JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 30, 0));
+        JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 20, 0));
         right.setOpaque(false);
 
         JButton homeBtn = createNavButton("Home");
@@ -62,10 +59,6 @@ public class SettingsFrame extends JFrame {
             dispose();
         });
 
-        right.add(homeBtn);
-        right.add(aboutBtn);
-        right.add(settingsBtn);
-
         JButton logoutBtn = new JButton("Log-out");
         logoutBtn.setBackground(new Color(109, 8, 0));
         logoutBtn.setForeground(Color.WHITE);
@@ -73,11 +66,11 @@ public class SettingsFrame extends JFrame {
         logoutBtn.setBorderPainted(false);
         logoutBtn.setPreferredSize(new Dimension(100, 35));
 
-        logoutBtn.addActionListener(e -> {
-            new AuthFrame();
-            dispose();
-        });
+        logoutBtn.addActionListener(e -> new LogoutPopup(this));
 
+        right.add(homeBtn);
+        right.add(aboutBtn);
+        right.add(settingsBtn);
         right.add(logoutBtn);
 
         navbar.add(left, BorderLayout.WEST);
@@ -94,7 +87,6 @@ public class SettingsFrame extends JFrame {
         content.setBorder(new EmptyBorder(35, 70, 35, 70));
         content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
 
-        // TITLE
         JPanel titlePanel = new JPanel(new BorderLayout());
         titlePanel.setOpaque(false);
 
@@ -127,7 +119,7 @@ public class SettingsFrame extends JFrame {
         titlePanel.add(leftTitle, BorderLayout.WEST);
         titlePanel.add(backBtn, BorderLayout.EAST);
 
-        // ================= SETTINGS CARD =================
+        // ================= CARD =================
         JPanel settingsCard = new JPanel();
         settingsCard.setBackground(Color.WHITE);
         settingsCard.setBorder(new EmptyBorder(25, 25, 25, 25));
@@ -136,120 +128,118 @@ public class SettingsFrame extends JFrame {
         JLabel sectionTitle = new JLabel("User Preferences");
         sectionTitle.setFont(new Font("Arial", Font.BOLD, 24));
 
-        // NAME DISPLAY
+        // ================= NAME =================
         JPanel namePanel = createRowPanel();
-
         JLabel nameLabel = new JLabel("Name");
-        nameLabel.setFont(new Font("Arial", Font.PLAIN, 18));
-
         JLabel currentName = new JLabel(fullName);
         currentName.setForeground(Color.GRAY);
 
-        namePanel.add(nameLabel, BorderLayout.WEST);
-        namePanel.add(currentName, BorderLayout.EAST);
+        namePanel.add(nameLabel);
+        namePanel.add(Box.createHorizontalGlue());
+        namePanel.add(currentName);
 
-        // CHANGE NAME
+        // ================= CHANGE NAME =================
         JPanel changePanel = createRowPanel();
-
         JLabel changeLabel = new JLabel("Change Name");
-        changeLabel.setFont(new Font("Arial", Font.PLAIN, 18));
-
-        JPanel changeRight = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-        changeRight.setOpaque(false);
 
         JTextField changeField = new JTextField();
         changeField.setPreferredSize(new Dimension(180, 30));
+        changeField.setMaximumSize(new Dimension(180, 30));
 
-        JButton changeBtn = new JButton("Change");
-        changeBtn.setBackground(new Color(166, 95, 0));
-        changeBtn.setForeground(Color.WHITE);
-        changeBtn.setFocusPainted(false);
-        changeBtn.setBorderPainted(false);
+        JButton changeBtn = createButton("Change");
+
+        setPlaceholder(changeField, "Type here...");
 
         changeBtn.addActionListener(e -> {
-
             String newName = changeField.getText().trim();
 
-            if (newName.isEmpty()) {
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Please enter a new name.");
-
+            if (newName.isEmpty() || newName.equals("Type here...")) {
+                JOptionPane.showMessageDialog(this, "Please enter a new name.");
                 return;
             }
 
             UserSession.fullName = newName;
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Name updated successfully!");
+            JOptionPane.showMessageDialog(this, "Name updated successfully!");
 
             new SettingsFrame(UserSession.fullName);
             dispose();
         });
 
-        changeRight.add(changeField);
-        changeRight.add(changeBtn);
+        changePanel.add(changeLabel);
+        changePanel.add(Box.createHorizontalGlue());
+        changePanel.add(changeField);
+        changePanel.add(changeBtn);
 
-        changePanel.add(changeLabel, BorderLayout.WEST);
-        changePanel.add(changeRight, BorderLayout.EAST);
+        // ================= PASSWORD (FIXED) =================
+        JPanel passwordPanel = createRowPanel();
+        JLabel passwordLabel = new JLabel("Change Password");
 
-        // PROGRAM FIELD
+        JPasswordField passwordField = new JPasswordField();
+        passwordField.setPreferredSize(new Dimension(180, 30));
+        passwordField.setMaximumSize(new Dimension(180, 30));
+
+        JButton passwordBtn = createButton("Change");
+
+        setPasswordPlaceholder(passwordField, "Type here...");
+
+        passwordBtn.addActionListener(e -> {
+            String newPassword = String.valueOf(passwordField.getPassword());
+
+            if (newPassword.isEmpty() || newPassword.equals("Type here...")) {
+                JOptionPane.showMessageDialog(this, "Please enter a new password.");
+                return;
+            }
+
+            UserSession.password = newPassword;
+            JOptionPane.showMessageDialog(this, "Password updated successfully!");
+        });
+
+        passwordPanel.add(passwordLabel);
+        passwordPanel.add(Box.createHorizontalGlue());
+        passwordPanel.add(passwordField);
+        passwordPanel.add(passwordBtn);
+
+        // ================= PROGRAM =================
         JPanel programPanel = createRowPanel();
-
         JLabel programLabel = new JLabel("Program Field");
-        programLabel.setFont(new Font("Arial", Font.PLAIN, 18));
 
-        String[] programs = {
-                "CCS",
-                "CHS",
-                "CSM",
-                "CASS",
-                "COE",
-                "CED",
-                "CEBA"
-        };
-
+        String[] programs = {"CCS", "CHS", "CSM", "CASS", "COE", "CED", "CEBA"};
         JComboBox<String> comboBox = new JComboBox<>(programs);
-        comboBox.setPreferredSize(new Dimension(120, 30));
 
-        JPanel comboWrap = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
-        comboWrap.setOpaque(false);
-        comboWrap.add(comboBox);
+        programPanel.add(programLabel);
+        programPanel.add(Box.createHorizontalGlue());
+        programPanel.add(comboBox);
 
-        programPanel.add(programLabel, BorderLayout.WEST);
-        programPanel.add(comboWrap, BorderLayout.EAST);
-
-        // ADD ALL
+        // ================= ADD =================
         settingsCard.add(sectionTitle);
         settingsCard.add(Box.createRigidArea(new Dimension(0, 20)));
         settingsCard.add(namePanel);
-        settingsCard.add(Box.createRigidArea(new Dimension(0, 15)));
         settingsCard.add(changePanel);
-        settingsCard.add(Box.createRigidArea(new Dimension(0, 15)));
+        settingsCard.add(passwordPanel);
         settingsCard.add(programPanel);
 
-        // HELP CARD
         JPanel helpCard = new JPanel(new BorderLayout());
         helpCard.setBackground(Color.WHITE);
         helpCard.setBorder(new EmptyBorder(20, 25, 20, 25));
-        helpCard.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
 
         JLabel help = new JLabel("How to use");
-        help.setFont(new Font("Arial", Font.PLAIN, 18));
+        JButton goBtn = createButton("Go");
 
-        JButton goBtn = new JButton("Go");
-        goBtn.setBackground(new Color(166, 95, 0));
-        goBtn.setForeground(Color.WHITE);
-        goBtn.setFocusPainted(false);
-        goBtn.setBorderPainted(false);
-        goBtn.setPreferredSize(new Dimension(80, 30));
+        goBtn.addActionListener(e -> {
+            try {
+                Desktop.getDesktop().browse(
+                        new java.net.URI("https://hhshsjsjajajjajajananqnnqnqqkqn.my.canva.site/gabayiskolar-pdf")
+                );
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this,
+                        "Unable to open link.");
+            }
+        });
 
         helpCard.add(help, BorderLayout.WEST);
         helpCard.add(goBtn, BorderLayout.EAST);
 
-        // ADD TO CONTENT
         content.add(titlePanel);
         content.add(Box.createRigidArea(new Dimension(0, 30)));
         content.add(settingsCard);
@@ -259,39 +249,93 @@ public class SettingsFrame extends JFrame {
         return content;
     }
 
-    // ================= ROW PANEL =================
+    // ================= ROW =================
     private JPanel createRowPanel() {
-
-        JPanel panel = new JPanel(new BorderLayout());
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
         panel.setBackground(new Color(245, 245, 245));
-        panel.setBorder(new EmptyBorder(15, 15, 15, 15));
+        panel.setBorder(new EmptyBorder(12, 12, 12, 12));
         panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
-
         return panel;
     }
 
-    // ================= NAV BUTTON =================
-    private JButton createNavButton(String text) {
+    // ================= PLACEHOLDER TEXTFIELD =================
+    private void setPlaceholder(JTextField field, String text) {
+        field.setText(text);
+        field.setForeground(Color.GRAY);
 
+        field.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent e) {
+                if (field.getText().equals(text)) {
+                    field.setText("");
+                    field.setForeground(Color.BLACK);
+                }
+            }
+
+            public void focusLost(java.awt.event.FocusEvent e) {
+                if (field.getText().isEmpty()) {
+                    field.setText(text);
+                    field.setForeground(Color.GRAY);
+                }
+            }
+        });
+    }
+
+    // ================= PLACEHOLDER PASSWORD (FIXED) =================
+    private void setPasswordPlaceholder(JPasswordField field, String text) {
+
+        field.setEchoChar((char) 0);
+        field.setText(text);
+        field.setForeground(Color.GRAY);
+
+        field.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent e) {
+                String value = String.valueOf(field.getPassword());
+                if (value.equals(text)) {
+                    field.setText("");
+                    field.setForeground(Color.BLACK);
+                    field.setEchoChar('•');
+                }
+            }
+
+            public void focusLost(java.awt.event.FocusEvent e) {
+                String value = String.valueOf(field.getPassword());
+                if (value.isEmpty()) {
+                    field.setEchoChar((char) 0);
+                    field.setText(text);
+                    field.setForeground(Color.GRAY);
+                }
+            }
+        });
+    }
+
+    // ================= BUTTONS =================
+    private JButton createButton(String text) {
+        JButton btn = new JButton(text);
+        btn.setBackground(new Color(166, 95, 0));
+        btn.setForeground(Color.WHITE);
+        btn.setFocusPainted(false);
+        btn.setBorderPainted(false);
+        btn.setPreferredSize(new Dimension(110, 30));
+        return btn;
+    }
+
+    private JButton createNavButton(String text) {
         JButton btn = new JButton(text);
         btn.setBorderPainted(false);
         btn.setContentAreaFilled(false);
         btn.setFocusPainted(false);
         btn.setFont(new Font("Arial", Font.PLAIN, 16));
-
         return btn;
     }
 
-    // ================= ACTIVE BUTTON =================
     private JButton createActiveNavButton(String text) {
-
         JButton btn = new JButton(text);
         btn.setBackground(new Color(109, 8, 0));
         btn.setForeground(Color.WHITE);
         btn.setOpaque(true);
         btn.setBorderPainted(false);
         btn.setFocusPainted(false);
-
         return btn;
     }
 }

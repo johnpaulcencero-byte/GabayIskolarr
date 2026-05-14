@@ -157,10 +157,7 @@ public class AddScholarshipFrame extends JFrame {
                 new Dimension(100, 35));
 
         logoutBtn.addActionListener(e -> {
-
-            new AuthFrame();
-
-            dispose();
+            new LogoutPopup(this);
         });
 
         right.add(logoutBtn);
@@ -209,10 +206,12 @@ public class AddScholarshipFrame extends JFrame {
                         50));
 
         // ================= SEARCH FIELD =================
-        searchField = new JTextField();
+        searchField = new JTextField("Search");
 
         searchField.setFont(
                 new Font("Arial", Font.PLAIN, 18));
+
+        searchField.setForeground(Color.GRAY);
 
         searchField.setPreferredSize(
                 new Dimension(950, 50));
@@ -235,7 +234,42 @@ public class AddScholarshipFrame extends JFrame {
                                 10,
                                 20)));
 
+
         searchField.setToolTipText("Search");
+
+        // ================= PLACEHOLDER =================
+        searchField.addFocusListener(
+                new java.awt.event.FocusAdapter() {
+
+                    @Override
+                    public void focusGained(
+                            java.awt.event.FocusEvent e) {
+
+                        if (searchField.getText()
+                                .equals("Search")) {
+
+                            searchField.setText("");
+
+                            searchField.setForeground(
+                                    Color.BLACK);
+                        }
+                    }
+
+                    @Override
+                    public void focusLost(
+                            java.awt.event.FocusEvent e) {
+
+                        if (searchField.getText()
+                                .trim()
+                                .isEmpty()) {
+
+                            searchField.setText("Search");
+
+                            searchField.setForeground(
+                                    Color.GRAY);
+                        }
+                    }
+                });
 
         // ================= SEARCH FUNCTION =================
         searchField.addKeyListener(
@@ -245,8 +279,13 @@ public class AddScholarshipFrame extends JFrame {
                     public void keyReleased(
                             java.awt.event.KeyEvent e) {
 
-                        filterScholarships(
-                                searchField.getText());
+                        String text =
+                                searchField.getText();
+
+                        if (!text.equals("Search")) {
+
+                            filterScholarships(text);
+                        }
                     }
                 });
 
@@ -319,7 +358,44 @@ public class AddScholarshipFrame extends JFrame {
                 listPanel,
                 BorderLayout.NORTH);
 
+        // ================= DISCOVERY LABEL =================
+        JPanel discoveryPanel =
+                new JPanel(
+                        new FlowLayout(
+                                FlowLayout.LEFT,
+                                0,
+                                0));
+
+        discoveryPanel.setOpaque(false);
+
+        JLabel discoveryLabel =
+                new JLabel("Discovery");
+
+        discoveryLabel.setOpaque(true);
+
+        discoveryLabel.setBackground(
+                new Color(109, 8, 0));
+
+        discoveryLabel.setForeground(Color.WHITE);
+
+        discoveryLabel.setFont(
+                new Font("Arial", Font.BOLD, 15));
+
+        discoveryLabel.setBorder(
+                new EmptyBorder(
+                        8,
+                        16,
+                        8,
+                        16));
+
+        discoveryPanel.add(discoveryLabel);
+
         // ================= ADD CONTENT =================
+        content.add(discoveryPanel);
+
+        content.add(Box.createRigidArea(
+                new Dimension(0, 18)));
+
         content.add(topPanel);
 
         content.add(Box.createRigidArea(
@@ -380,38 +456,48 @@ public class AddScholarshipFrame extends JFrame {
 
         keyword = keyword.toLowerCase();
 
+        boolean found = false;
+
         for (int i = 0; i < cards.size(); i++) {
 
-            String name =
-                    scholarshipNames.get(i)
-                            .toLowerCase();
+            String name = scholarshipNames.get(i).toLowerCase();
 
             if (name.contains(keyword)) {
 
-                JPanel wrapper =
-                        new JPanel(
-                                new BorderLayout());
-
+                JPanel wrapper = new JPanel(new BorderLayout());
                 wrapper.setOpaque(false);
-
-                wrapper.add(cards.get(i),
-                        BorderLayout.CENTER);
-
-                wrapper.setMaximumSize(
-                        new Dimension(
-                                Integer.MAX_VALUE,
-                                100));
+                wrapper.add(cards.get(i), BorderLayout.CENTER);
+                wrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
 
                 listPanel.add(wrapper);
+                listPanel.add(Box.createRigidArea(new Dimension(0, 20)));
 
-                listPanel.add(
-                        Box.createRigidArea(
-                                new Dimension(0, 20)));
+                found = true;
             }
         }
 
-        listPanel.revalidate();
+        // ================= NO RESULT TEXT =================
+        if (!found) {
 
+            JLabel emptyLabel = new JLabel("No Scholarship Found!");
+            emptyLabel.setFont(new Font("Arial", Font.BOLD, 22));
+            emptyLabel.setForeground(Color.GRAY);
+            emptyLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            emptyLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+            JPanel emptyPanel = new JPanel();
+            emptyPanel.setOpaque(false);
+            emptyPanel.setLayout(new BoxLayout(emptyPanel, BoxLayout.Y_AXIS));
+            emptyPanel.setPreferredSize(new Dimension(1000, 200));
+
+            emptyPanel.add(Box.createVerticalGlue());
+            emptyPanel.add(emptyLabel);
+            emptyPanel.add(Box.createVerticalGlue());
+
+            listPanel.add(emptyPanel);
+        }
+
+        listPanel.revalidate();
         listPanel.repaint();
     }
 
@@ -455,6 +541,28 @@ public class AddScholarshipFrame extends JFrame {
         titleLabel.setFont(
                 new Font("Arial", Font.BOLD, 28));
 
+        titleLabel.setCursor(
+                new Cursor(Cursor.HAND_CURSOR));
+
+        // CLICK FUNCTION
+        titleLabel.addMouseListener(
+                new java.awt.event.MouseAdapter() {
+
+                    @Override
+                    public void mouseClicked(
+                            java.awt.event.MouseEvent e) {
+
+                        if (title.equals("MSU SASE")) {
+
+                            new ScholarshipDetailsFrame(
+                                    title,
+                                    deadline);
+
+                            dispose();
+                        }
+                    }
+                });
+
         JLabel deadlineLabel =
                 new JLabel(
                         "Deadline : " + deadline);
@@ -482,7 +590,6 @@ public class AddScholarshipFrame extends JFrame {
         addBtn.setPreferredSize(
                 new Dimension(100, 35));
 
-        // ================= CHECK IF ALREADY ADDED =================
         boolean alreadyAdded = false;
 
         for (Scholarship s :
@@ -496,7 +603,6 @@ public class AddScholarshipFrame extends JFrame {
             }
         }
 
-        // ================= BUTTON STATE =================
         if (alreadyAdded) {
 
             addBtn.setText("Added");
@@ -517,20 +623,21 @@ public class AddScholarshipFrame extends JFrame {
 
             addBtn.setForeground(Color.WHITE);
 
-            // ================= ADD FUNCTION =================
             addBtn.addActionListener(e -> {
 
+                // ADD SCHOLARSHIP WITH PREVIEW STATUS
                 ScholarshipManager.scholarships.add(
                         new Scholarship(
                                 title,
                                 deadline,
-                                "Pending"));
+                                "Preview"));
 
+                // SUCCESS MESSAGE
                 JOptionPane.showMessageDialog(
                         this,
                         title + " added successfully!");
 
-                // CHANGE BUTTON
+                // BUTTON STATE
                 addBtn.setText("Added");
 
                 addBtn.setEnabled(false);
@@ -538,7 +645,9 @@ public class AddScholarshipFrame extends JFrame {
                 addBtn.setBackground(
                         new Color(120, 120, 120));
 
-                // REFRESH DASHBOARD
+                addBtn.setForeground(Color.WHITE);
+
+                // RETURN TO DASHBOARD
                 new DashboardFrame(
                         UserSession.fullName);
 

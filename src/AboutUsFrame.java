@@ -29,7 +29,6 @@ public class AboutUsFrame extends JFrame {
         navbar.setBackground(Color.WHITE);
         navbar.setBorder(new EmptyBorder(20, 40, 20, 40));
 
-        // LEFT
         JPanel left = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 0));
         left.setOpaque(false);
 
@@ -44,7 +43,6 @@ public class AboutUsFrame extends JFrame {
         left.add(logo);
         left.add(title);
 
-        // RIGHT
         JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 30, 0));
         right.setOpaque(false);
 
@@ -52,23 +50,16 @@ public class AboutUsFrame extends JFrame {
         JButton aboutBtn = createActiveNavButton("About Us");
         JButton settingsBtn = createNavButton("Settings");
 
-        // HOME BUTTON
         homeBtn.addActionListener(e -> {
             new DashboardFrame(UserSession.fullName);
             dispose();
         });
 
-        // SETTINGS BUTTON
         settingsBtn.addActionListener(e -> {
             new SettingsFrame(UserSession.fullName);
             dispose();
         });
 
-        right.add(homeBtn);
-        right.add(aboutBtn);
-        right.add(settingsBtn);
-
-        // LOGOUT BUTTON
         JButton logoutBtn = new JButton("Log-out");
         logoutBtn.setBackground(new Color(220, 0, 0));
         logoutBtn.setForeground(Color.WHITE);
@@ -76,11 +67,11 @@ public class AboutUsFrame extends JFrame {
         logoutBtn.setBorderPainted(false);
         logoutBtn.setPreferredSize(new Dimension(100, 35));
 
-        logoutBtn.addActionListener(e -> {
-            new AuthFrame();
-            dispose();
-        });
+        logoutBtn.addActionListener(e -> new LogoutPopup(this));
 
+        right.add(homeBtn);
+        right.add(aboutBtn);
+        right.add(settingsBtn);
         right.add(logoutBtn);
 
         navbar.add(left, BorderLayout.WEST);
@@ -108,8 +99,7 @@ public class AboutUsFrame extends JFrame {
         JLabel aboutTitle = new JLabel("About us");
         aboutTitle.setFont(new Font("Arial", Font.BOLD, 44));
 
-        JLabel subtitle = new JLabel(
-                "Empowering Iskolar ng Bayan, one application at a time!");
+        JLabel subtitle = new JLabel("Empowering Iskolar ng Bayan, one application at a time!");
         subtitle.setFont(new Font("Arial", Font.PLAIN, 22));
         subtitle.setForeground(Color.GRAY);
 
@@ -159,52 +149,40 @@ public class AboutUsFrame extends JFrame {
         JPanel teamPanel = new JPanel(new GridLayout(1, 4, 20, 0));
         teamPanel.setOpaque(false);
 
-        teamPanel.add(createMemberCard(
-                "assets/member1.jpg",
-                "Caroline Tomakin",
-                "UI Designer"));
+        teamPanel.add(createMemberCard("assets/member1.jpg", "Caroline Tomakin", "UI Designer"));
+        teamPanel.add(createMemberCard("assets/member2.jpg", "John Paul Cencero", "Programmer"));
+        teamPanel.add(createMemberCard("assets/member3.png", "Kaye Abitona", "Backend"));
+        teamPanel.add(createMemberCard("assets/member4.jpg", "Liza Limpangog", "Documentation"));
 
-        teamPanel.add(createMemberCard(
-                "assets/member2.jpg",
-                "Kaye H. Abitona",
-                "Programmer"));
-
-        teamPanel.add(createMemberCard(
-                "assets/member3.jpg",
-                "Member Name",
-                "Backend"));
-
-        teamPanel.add(createMemberCard(
-                "assets/member4.jpg",
-                "Member Name",
-                "Documentation"));
-
-        // ===== MISSION SECTION =====
+        // ===== MISSION & VISION (FIXED) =====
         JPanel missionPanel = new JPanel();
         missionPanel.setOpaque(false);
         missionPanel.setLayout(new BoxLayout(missionPanel, BoxLayout.Y_AXIS));
-        missionPanel.setPreferredSize(new Dimension(250, 200));
 
-        JLabel missionTitle = new JLabel("Our Mission");
+        JLabel missionTitle = new JLabel("MISSION");
         missionTitle.setFont(new Font("Arial", Font.BOLD, 32));
 
         JLabel missionText = new JLabel(
-                "<html>\"To help MSU-IIT students<br>never miss a scholarship opportunity.\"</html>");
-
+                "<html>\"To help MSU-IIT students<br>"
+                        + "never miss a scholarship opportunity.\"</html>");
         missionText.setFont(new Font("Arial", Font.PLAIN, 18));
 
-        JLabel year = new JLabel("A.Y. 2025 - 2026");
+        JLabel visionTitle = new JLabel("VISION");
+        visionTitle.setFont(new Font("Arial", Font.BOLD, 32));
 
-        JLabel prof = new JLabel(
-                "<html>Professor:<br>Andrade, Mary Ann Cliefen B</html>");
+        JLabel visionText = new JLabel(
+                "<html>\"A campus where every qualified MSU-IIT student<br>"
+                        + "is informed, prepared, and supported<br>"
+                        + "in accessing the financial aid they deserve.\"</html>");
+        visionText.setFont(new Font("Arial", Font.PLAIN, 18));
 
         missionPanel.add(missionTitle);
         missionPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         missionPanel.add(missionText);
-        missionPanel.add(Box.createRigidArea(new Dimension(0, 15)));
-        missionPanel.add(year);
-        missionPanel.add(Box.createRigidArea(new Dimension(0, 15)));
-        missionPanel.add(prof);
+        missionPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        missionPanel.add(visionTitle);
+        missionPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        missionPanel.add(visionText);
 
         // ===== BOTTOM SECTION =====
         JPanel bottomSection = new JPanel(new BorderLayout(30, 0));
@@ -220,54 +198,34 @@ public class AboutUsFrame extends JFrame {
         content.add(Box.createRigidArea(new Dimension(0, 25)));
         content.add(bottomSection);
 
-        // ===== SCROLL =====
         JScrollPane scrollPane = new JScrollPane(content);
-
         scrollPane.setBorder(null);
-
-        scrollPane.getViewport().setBackground(
-                new Color(245, 245, 245));
-
-        scrollPane.setHorizontalScrollBarPolicy(
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getViewport().setBackground(new Color(245, 245, 245));
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         return scrollPane;
     }
 
     // ================= MEMBER CARD =================
-    private JPanel createMemberCard(String imagePath,
-                                    String name,
-                                    String role) {
+    private JPanel createMemberCard(String imagePath, String name, String role) {
 
         JPanel card = new JPanel();
-
         card.setBackground(Color.WHITE);
-
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-
         card.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         ImageIcon icon = new ImageIcon(imagePath);
-
-        Image img = icon.getImage().getScaledInstance(
-                120,
-                140,
-                Image.SCALE_SMOOTH);
+        Image img = icon.getImage().getScaledInstance(120, 140, Image.SCALE_SMOOTH);
 
         JLabel pic = new JLabel(new ImageIcon(img));
-
         pic.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel n = new JLabel(name);
-
         n.setAlignmentX(Component.CENTER_ALIGNMENT);
-
         n.setFont(new Font("Arial", Font.BOLD, 14));
 
         JLabel r = new JLabel(role);
-
         r.setAlignmentX(Component.CENTER_ALIGNMENT);
-
         r.setForeground(Color.GRAY);
 
         card.add(pic);
@@ -280,28 +238,22 @@ public class AboutUsFrame extends JFrame {
 
     // ================= NAV BUTTON =================
     private JButton createNavButton(String text) {
-
         JButton btn = new JButton(text);
-
         btn.setBorderPainted(false);
         btn.setContentAreaFilled(false);
         btn.setFocusPainted(false);
         btn.setFont(new Font("Arial", Font.PLAIN, 16));
-
         return btn;
     }
 
     // ================= ACTIVE NAV BUTTON =================
     private JButton createActiveNavButton(String text) {
-
         JButton btn = new JButton(text);
-
         btn.setBackground(new Color(109, 8, 0));
         btn.setForeground(Color.WHITE);
         btn.setOpaque(true);
         btn.setBorderPainted(false);
         btn.setFocusPainted(false);
-
         return btn;
     }
 }

@@ -14,7 +14,7 @@ public class SignupPanel extends RoundedPanel {
 
         setBorder(new EmptyBorder(30, 45, 30, 45));
 
-        // LOGO
+        // ================= LOGO =================
         ImageIcon logoIcon = new ImageIcon("assets/logo.png");
 
         Image img = logoIcon.getImage().getScaledInstance(
@@ -26,44 +26,41 @@ public class SignupPanel extends RoundedPanel {
 
         logo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // TITLE
+        // ================= TITLE =================
         JLabel title = new JLabel("Gabay - Iskolar");
 
         title.setFont(new Font("Arial", Font.BOLD, 30));
 
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // FULL NAME
+        // ================= FULL NAME =================
         JTextField fullName = new JTextField();
 
-        fullName.setBorder(
-                BorderFactory.createTitledBorder("Full Name"));
+        fullName.setBorder(BorderFactory.createTitledBorder("Full Name"));
 
         fullName.setPreferredSize(new Dimension(300, 40));
 
         fullName.setMaximumSize(new Dimension(300, 40));
 
-        // EMAIL
+        // ================= EMAIL =================
         JTextField email = new JTextField();
 
-        email.setBorder(
-                BorderFactory.createTitledBorder("Email"));
+        email.setBorder(BorderFactory.createTitledBorder("Email"));
 
         email.setPreferredSize(new Dimension(300, 40));
 
         email.setMaximumSize(new Dimension(300, 40));
 
-        // PASSWORD
+        // ================= PASSWORD =================
         JPasswordField password = new JPasswordField();
 
-        password.setBorder(
-                BorderFactory.createTitledBorder("Password"));
+        password.setBorder(BorderFactory.createTitledBorder("Password"));
 
         password.setPreferredSize(new Dimension(300, 40));
 
         password.setMaximumSize(new Dimension(300, 40));
 
-        // SIGNUP BUTTON
+        // ================= SIGNUP BUTTON =================
         JButton signupBtn = new JButton("Sign up");
 
         signupBtn.setBackground(new Color(166, 95, 0));
@@ -80,25 +77,36 @@ public class SignupPanel extends RoundedPanel {
 
         signupBtn.addActionListener(e -> {
 
-            String name = fullName.getText();
+            String name = fullName.getText().trim();
+            String userEmail = email.getText().trim();
+            String userPass = String.valueOf(password.getPassword());
 
-            if (name.isEmpty()) {
+            // ================= VALIDATION =================
+            if (name.isEmpty() || userEmail.isEmpty() || userPass.isEmpty()) {
 
                 JOptionPane.showMessageDialog(
                         this,
-                        "Please enter full name.");
-
+                        "Please fill in all fields.");
                 return;
             }
 
+            // ================= SAVE USER DATA =================
+            UserSession.fullName = name;
+            UserSession.email = userEmail;
+            UserSession.password = userPass;
+
+            // IMPORTANT: store mapping for login display name
+            UserSession.userNames.put(userEmail, name);
+
+            // ================= OPEN DASHBOARD =================
             new DashboardFrame(name);
 
             frame.dispose();
         });
 
-        // LOGIN BUTTON
+        // ================= LOGIN BUTTON =================
         JButton loginBtn = new JButton(
-                "Already have an account? Log in");
+                "Already a User? Log in");
 
         loginBtn.setBorderPainted(false);
 
@@ -108,7 +116,7 @@ public class SignupPanel extends RoundedPanel {
 
         loginBtn.addActionListener(e -> frame.showPage("login"));
 
-        // ADD COMPONENTS
+        // ================= ADD COMPONENTS =================
         add(Box.createVerticalGlue());
 
         add(logo);

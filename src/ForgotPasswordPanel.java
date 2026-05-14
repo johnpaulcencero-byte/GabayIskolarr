@@ -7,112 +7,149 @@ public class ForgotPasswordPanel extends RoundedPanel {
     public ForgotPasswordPanel(AuthFrame frame) {
 
         setPreferredSize(new Dimension(430, 500));
-
         setBackground(Color.WHITE);
+        setLayout(new BorderLayout());
 
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        // ================= MAIN CONTENT =================
+        JPanel content = new JPanel();
+        content.setOpaque(false);
+        content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
+        content.setBorder(new EmptyBorder(20, 45, 30, 45));
 
-        setBorder(new EmptyBorder(30, 45, 30, 45));
+        // ================= TOP PANEL (BACK BUTTON) =================
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        topPanel.setOpaque(false);
 
-        // BACK BUTTON
         JButton backBtn = new JButton("←");
-
-        backBtn.setFont(new Font("Arial", Font.BOLD, 24));
-
+        backBtn.setFont(new Font("Arial", Font.BOLD, 28));
         backBtn.setBorderPainted(false);
-
         backBtn.setContentAreaFilled(false);
-
+        backBtn.setFocusPainted(false);
         backBtn.setForeground(new Color(166, 95, 0));
-
-        backBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
+        backBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         backBtn.addActionListener(e -> frame.showPage("login"));
 
-        // LOGO
+        topPanel.add(backBtn);
+
+        // ================= LOGO =================
         ImageIcon logoIcon = new ImageIcon("assets/logo.png");
 
         Image img = logoIcon.getImage().getScaledInstance(
                 100,
                 100,
-                Image.SCALE_AREA_AVERAGING);
+                Image.SCALE_SMOOTH);
 
         JLabel logo = new JLabel(new ImageIcon(img));
-
         logo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // TITLE
+        // ================= TITLE =================
         JLabel title = new JLabel("Gabay - Iskolar");
-
         title.setFont(new Font("Arial", Font.BOLD, 30));
-
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // DESCRIPTION
+        // ================= DESCRIPTION =================
         JLabel description = new JLabel(
                 "Confirm your email and we'll send instructions.");
-
         description.setForeground(Color.GRAY);
-
+        description.setFont(new Font("Arial", Font.PLAIN, 13));
         description.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // EMAIL FIELD
+        // ================= EMAIL FIELD =================
         JTextField email = new JTextField();
+        email.setMaximumSize(new Dimension(300, 42));
+        email.setPreferredSize(new Dimension(300, 42));
+        email.setFont(new Font("Arial", Font.PLAIN, 14));
 
         email.setBorder(
-                BorderFactory.createTitledBorder("Email"));
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(
+                                new Color(210, 210, 210),
+                                1,
+                                true),
+                        BorderFactory.createEmptyBorder(10, 12, 10, 12)
+                )
+        );
 
-        email.setPreferredSize(new Dimension(300, 40));
-
-        email.setMaximumSize(new Dimension(300, 40));
-
-        // SEND BUTTON
-        JButton sendBtn = new JButton("Send");
-
+        // ================= SEND BUTTON =================
+        JButton sendBtn = new JButton("Reset Password");
         sendBtn.setBackground(new Color(166, 95, 0));
-
         sendBtn.setForeground(Color.WHITE);
-
         sendBtn.setFocusPainted(false);
-
-        sendBtn.setPreferredSize(new Dimension(300, 40));
-
-        sendBtn.setMaximumSize(new Dimension(300, 40));
-
+        sendBtn.setFont(new Font("Arial", Font.BOLD, 14));
         sendBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        sendBtn.setMaximumSize(new Dimension(300, 40));
+        sendBtn.setPreferredSize(new Dimension(300, 40));
+        sendBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // FOOTER
+        // ================= FOOTER MESSAGE =================
         JLabel footer = new JLabel("Please check your email.");
-
+        footer.setFont(new Font("Arial", Font.PLAIN, 13));
+        footer.setForeground(Color.BLACK);
         footer.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // ADD COMPONENTS
-        add(backBtn);
+        // HIDDEN BY DEFAULT
+        footer.setVisible(false);
 
-        add(Box.createVerticalGlue());
+        // ================= SEND ACTION =================
+        sendBtn.addActionListener(e -> {
 
-        add(logo);
+            String userEmail = email.getText().trim();
 
-        add(Box.createRigidArea(new Dimension(0, 10)));
+            if (userEmail.isEmpty()) {
 
-        add(title);
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Please enter your email.",
+                        "Missing Email",
+                        JOptionPane.WARNING_MESSAGE
+                );
 
-        add(Box.createRigidArea(new Dimension(0, 15)));
+                return;
+            }
 
-        add(description);
+            // SHOW MESSAGE
+            footer.setVisible(true);
 
-        add(Box.createRigidArea(new Dimension(0, 20)));
+            // AUTO HIDE AFTER 3 SECONDS
+            Timer timer = new Timer(3000, event -> {
+                footer.setVisible(false);
+            });
 
-        add(email);
+            timer.setRepeats(false);
+            timer.start();
+        });
 
-        add(Box.createRigidArea(new Dimension(0, 20)));
+        // ================= ADD COMPONENTS =================
+        content.add(Box.createVerticalGlue());
 
-        add(sendBtn);
+        content.add(logo);
 
-        add(Box.createRigidArea(new Dimension(0, 20)));
+        content.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        add(footer);
+        content.add(title);
 
-        add(Box.createVerticalGlue());
+        content.add(Box.createRigidArea(new Dimension(0, 15)));
+
+        content.add(description);
+
+        content.add(Box.createRigidArea(new Dimension(0, 25)));
+
+        email.setAlignmentX(Component.CENTER_ALIGNMENT);
+        content.add(email);
+
+        content.add(Box.createRigidArea(new Dimension(0, 20)));
+
+        content.add(sendBtn);
+
+        content.add(Box.createRigidArea(new Dimension(0, 20)));
+
+        content.add(footer);
+
+        content.add(Box.createVerticalGlue());
+
+        // ================= PANEL LAYOUT =================
+        add(topPanel, BorderLayout.NORTH);
+        add(content, BorderLayout.CENTER);
     }
 }

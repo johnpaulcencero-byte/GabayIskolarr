@@ -121,10 +121,7 @@ public class DashboardFrame extends JFrame {
                 new Dimension(100, 35));
 
         logoutBtn.addActionListener(e -> {
-
-            new AuthFrame();
-
-            dispose();
+            new LogoutPopup(this);
         });
 
         rightNav.add(logoutBtn);
@@ -174,8 +171,17 @@ public class DashboardFrame extends JFrame {
 
         addBtn.setBorderPainted(false);
 
+        Dimension addButtonSize =
+                new Dimension(190, 45);
+
         addBtn.setPreferredSize(
-                new Dimension(190, 45));
+                addButtonSize);
+
+        addBtn.setMinimumSize(
+                addButtonSize);
+
+        addBtn.setMaximumSize(
+                addButtonSize);
 
         addBtn.addActionListener(e -> {
 
@@ -187,13 +193,25 @@ public class DashboardFrame extends JFrame {
 
         topPanel.add(welcome, BorderLayout.WEST);
 
-        topPanel.add(addBtn, BorderLayout.EAST);
+// FIXED BUTTON PANEL
+        JPanel addButtonPanel = new JPanel(
+                new FlowLayout(
+                        FlowLayout.RIGHT,
+                        0,
+                        0));
+
+        addButtonPanel.setOpaque(false);
+
+        addButtonPanel.add(addBtn);
+
+        topPanel.add(addButtonPanel,
+                BorderLayout.EAST);
 
         // ================= COUNTS =================
         int total =
                 ScholarshipManager.scholarships.size();
 
-        int pending = 0;
+        int preview = 0;
 
         int ongoing = 0;
 
@@ -204,8 +222,8 @@ public class DashboardFrame extends JFrame {
 
             switch (s.getStatus()) {
 
-                case "Pending":
-                    pending++;
+                case "Preview":
+                    preview++;
                     break;
 
                 case "Ongoing":
@@ -232,9 +250,9 @@ public class DashboardFrame extends JFrame {
 
         cards.add(createClickableCard(
                 "PREVIEW",
-                String.valueOf(pending),
+                String.valueOf(preview),
                 new Color(84, 130, 230),
-                getScholarshipsByStatus("Pending")));
+                getScholarshipsByStatus("Preview")));
 
         cards.add(createClickableCard(
                 "ONGOING",
@@ -446,32 +464,393 @@ public class DashboardFrame extends JFrame {
         panel.setBorder(
                 new EmptyBorder(
                         15,
-                        20,
+                        25,
                         15,
-                        20));
+                        25));
+
+        // ================= LEFT PANEL =================
+        JPanel leftPanel = new JPanel();
+
+        leftPanel.setOpaque(false);
+
+        leftPanel.setLayout(
+                new BoxLayout(
+                        leftPanel,
+                        BoxLayout.Y_AXIS));
 
         JLabel title =
                 new JLabel(name);
 
         title.setFont(
-                new Font("Arial",
+                new Font(
+                        "Arial",
                         Font.BOLD,
                         22));
 
-        JLabel statusLabel =
-                new JLabel(status);
+        JLabel deadline =
+                new JLabel();
 
-        statusLabel.setFont(
-                new Font("Arial",
+        // GET DEADLINE
+        for (Scholarship s :
+                ScholarshipManager.scholarships) {
+
+            if (s.getName().equals(name)) {
+
+                deadline.setText(
+                        "Deadline : "
+                                + s.getDeadline());
+
+                break;
+            }
+        }
+
+        deadline.setFont(
+                new Font(
+                        "Arial",
+                        Font.PLAIN,
+                        16));
+
+        deadline.setForeground(Color.GRAY);
+
+        leftPanel.add(title);
+
+        leftPanel.add(Box.createRigidArea(
+                new Dimension(0, 5)));
+
+        leftPanel.add(deadline);
+
+        // ================= STATUS DROPDOWN =================
+        String[] statuses = {
+                "Preview",
+                "Ongoing",
+                "Done"
+        };
+
+        JComboBox<String> statusBox =
+                new JComboBox<>(statuses);
+
+        statusBox.setSelectedItem(status);
+
+        statusBox.setFont(
+                new Font(
+                        "Arial",
                         Font.BOLD,
-                        18));
+                        14));
 
-        statusLabel.setForeground(
-                new Color(84, 130, 230));
+        statusBox.setFocusable(false);
 
-        panel.add(title, BorderLayout.WEST);
+        statusBox.setPreferredSize(
+                new Dimension(125, 35));
 
-        panel.add(statusLabel, BorderLayout.EAST);
+        // COLORS
+        if (status.equals("Preview")) {
+
+            statusBox.setBackground(
+                    new Color(84, 130, 230));
+
+            statusBox.setForeground(Color.WHITE);
+
+        } else if (status.equals("Ongoing")) {
+
+            statusBox.setBackground(
+                    new Color(230, 150, 60));
+
+            statusBox.setForeground(Color.WHITE);
+
+        } else if (status.equals("Done")) {
+
+            statusBox.setBackground(
+                    new Color(100, 150, 20));
+
+            statusBox.setForeground(Color.WHITE);
+        }
+
+        // STATUS ACTION
+        statusBox.addActionListener(e -> {
+
+            String selected =
+                    (String) statusBox.getSelectedItem();
+
+            for (Scholarship s :
+                    ScholarshipManager.scholarships) {
+
+                if (s.getName().equals(name)) {
+
+                    s.setStatus(selected);
+
+                    break;
+                }
+            }
+
+            new DashboardFrame(
+                    UserSession.fullName);
+
+            dispose();
+        });
+
+        // ================= DELETE BUTTON =================
+        JButton deleteBtn = new JButton("-") {
+
+            @Override
+            protected void paintComponent(Graphics g) {
+
+                Graphics2D g2 =
+                        (Graphics2D) g.create();
+
+                g2.setRenderingHint(
+                        RenderingHints.KEY_ANTIALIASING,
+                        RenderingHints.VALUE_ANTIALIAS_ON);
+
+                // SHADOW
+                g2.setColor(
+                        new Color(0, 0, 0, 35));
+
+                g2.fillOval(3, 4, 30, 30);
+
+                // RED CIRCLE
+                g2.setColor(
+                        new Color(180, 0, 0));
+
+                g2.fillOval(0, 0, 30, 30);
+
+                // WHITE BORDER
+                g2.setColor(Color.WHITE);
+
+                g2.setStroke(
+                        new BasicStroke(1.5f));
+
+                g2.drawOval(0, 0, 30, 30);
+
+                // TEXT
+                g2.setColor(Color.WHITE);
+
+                g2.setFont(
+                        new Font(
+                                "Arial",
+                                Font.BOLD,
+                                18));
+
+                FontMetrics fm =
+                        g2.getFontMetrics();
+
+                int x =
+                        (30 - fm.stringWidth("-")) / 2;
+
+                int y =
+                        ((30 - fm.getHeight()) / 2)
+                                + fm.getAscent() - 1;
+
+                g2.drawString("-", x, y);
+
+                g2.dispose();
+            }
+        };
+
+        deleteBtn.setPreferredSize(
+                new Dimension(30, 30));
+
+        deleteBtn.setMinimumSize(
+                new Dimension(30, 30));
+
+        deleteBtn.setMaximumSize(
+                new Dimension(30, 30));
+
+        deleteBtn.setContentAreaFilled(false);
+
+        deleteBtn.setBorderPainted(false);
+
+        deleteBtn.setFocusPainted(false);
+
+        deleteBtn.setCursor(
+                new Cursor(Cursor.HAND_CURSOR));
+
+        // DELETE ACTION
+        deleteBtn.addActionListener(e -> {
+
+            // ================= CONFIRM DIALOG =================
+            JDialog confirmDialog =
+                    new JDialog(
+                            DashboardFrame.this,
+                            true);
+
+            confirmDialog.setUndecorated(true);
+
+            confirmDialog.setSize(320, 220);
+
+            confirmDialog.setLocationRelativeTo(
+                    DashboardFrame.this);
+
+            JPanel dialogPanel =
+                    new JPanel();
+
+            dialogPanel.setBackground(Color.WHITE);
+
+            dialogPanel.setBorder(
+                    BorderFactory.createLineBorder(
+                            new Color(220, 220, 220),
+                            1));
+
+            dialogPanel.setLayout(
+                    new BoxLayout(
+                            dialogPanel,
+                            BoxLayout.Y_AXIS));
+
+            // ================= TRASH IMAGE =================
+            ImageIcon trashIcon =
+                    new ImageIcon("assets/trash.png");
+
+            Image trashImg =
+                    trashIcon.getImage().getScaledInstance(
+                            70,
+                            70,
+                            Image.SCALE_SMOOTH);
+
+            JLabel iconLabel =
+                    new JLabel(
+                            new ImageIcon(trashImg));
+
+            iconLabel.setAlignmentX(
+                    Component.CENTER_ALIGNMENT);
+
+            // ================= MESSAGE =================
+            JLabel message =
+                    new JLabel(
+                            "Are you sure you want to remove?");
+
+            message.setFont(
+                    new Font("Arial", Font.BOLD, 14));
+
+            message.setAlignmentX(
+                    Component.CENTER_ALIGNMENT);
+
+            // ================= BUTTON PANEL =================
+            JPanel buttonPanel =
+                    new JPanel(
+                            new FlowLayout(
+                                    FlowLayout.CENTER,
+                                    15,
+                                    0));
+
+            buttonPanel.setOpaque(false);
+
+            // CANCEL BUTTON
+            JButton cancelBtn =
+                    new JButton("Cancel");
+
+            cancelBtn.setPreferredSize(
+                    new Dimension(105, 35));
+
+            cancelBtn.setBackground(
+                    Color.WHITE);
+
+            cancelBtn.setForeground(
+                    Color.DARK_GRAY);
+
+            cancelBtn.setFocusPainted(false);
+
+            cancelBtn.setBorder(
+                    BorderFactory.createLineBorder(
+                            new Color(210, 210, 210),
+                            1,
+                            true));
+
+            // CONFIRM BUTTON
+            JButton confirmBtn =
+                    new JButton("Confirm");
+
+            confirmBtn.setPreferredSize(
+                    new Dimension(105, 35));
+
+            confirmBtn.setBackground(
+                    new Color(109, 8, 0));
+
+            confirmBtn.setForeground(
+                    Color.WHITE);
+
+            confirmBtn.setFocusPainted(false);
+
+            confirmBtn.setBorderPainted(false);
+
+            // ================= CANCEL ACTION =================
+            cancelBtn.addActionListener(ev ->
+                    confirmDialog.dispose());
+
+            // ================= CONFIRM ACTION =================
+            confirmBtn.addActionListener(ev -> {
+
+                Scholarship removeTarget = null;
+
+                for (Scholarship s :
+                        ScholarshipManager.scholarships) {
+
+                    if (s.getName().equals(name)) {
+
+                        removeTarget = s;
+
+                        break;
+                    }
+                }
+
+                if (removeTarget != null) {
+
+                    ScholarshipManager.scholarships.remove(
+                            removeTarget);
+                }
+
+                confirmDialog.dispose();
+
+                new DashboardFrame(
+                        UserSession.fullName);
+
+                dispose();
+            });
+
+            buttonPanel.add(cancelBtn);
+
+            buttonPanel.add(confirmBtn);
+
+            // ================= ADD COMPONENTS =================
+            dialogPanel.add(Box.createRigidArea(
+                    new Dimension(0, 20)));
+
+            dialogPanel.add(iconLabel);
+
+            dialogPanel.add(Box.createRigidArea(
+                    new Dimension(0, 10)));
+
+            dialogPanel.add(message);
+
+            dialogPanel.add(Box.createRigidArea(
+                    new Dimension(0, 25)));
+
+            dialogPanel.add(buttonPanel);
+
+            dialogPanel.add(Box.createRigidArea(
+                    new Dimension(0, 20)));
+
+            confirmDialog.add(dialogPanel);
+
+            confirmDialog.setVisible(true);
+        });
+
+        // ================= RIGHT PANEL =================
+        JPanel rightPanel =
+                new JPanel(
+                        new FlowLayout(
+                                FlowLayout.RIGHT,
+                                14,
+                                10));
+
+        rightPanel.setOpaque(false);
+
+        rightPanel.add(statusBox);
+
+        rightPanel.add(deleteBtn);
+
+        // ================= ADD =================
+        panel.add(leftPanel, BorderLayout.WEST);
+
+        panel.add(rightPanel, BorderLayout.EAST);
 
         return panel;
     }
